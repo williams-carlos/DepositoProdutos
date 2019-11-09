@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.map.depositoprodutos.ui;
+package br.com.map.depositoprodutos.gui;
 
 
 import br.com.map.depositoprodutos.dao.ProdutoDao;
@@ -114,7 +114,7 @@ public class DepositoProdutosMAP {
                     case "4":
                         System.out.println("-------------LISTAR PRODUTOS-------------------");
                         list = dao.listar();
-                        System.out.println(list);
+                        //System.out.println(list);
                         if(list!=null)
                         {
                             for (Produto pr : list)

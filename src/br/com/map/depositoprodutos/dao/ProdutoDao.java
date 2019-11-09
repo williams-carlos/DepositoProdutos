@@ -26,8 +26,8 @@ public class ProdutoDao {
     private String sql;
     
     public void inserir(Produto produto) throws SQLException{
-        // inserir caracteristica
-        sql = "insert into caracteristicas (marca, sistema_operacional, cor) values(?, ?, ?)";
+       // inserir caracteristica
+        sql = "insert into caracteristicas (marca, sistema_operacional, cor, detalhes) values(?, ?, ?, ?)";
         
         con = ConnectionFactory.getConnection();
         
@@ -37,6 +37,7 @@ public class ProdutoDao {
         st.setString(1, produto.getCaracteristica().getMarca());
         st.setString(2, produto.getCaracteristica().getSistemaOpe());
         st.setString(3, produto.getCaracteristica().getCor());
+        st.setString(4, produto.getCaracteristica().getDetalhes());
         
         st.executeUpdate();
         
@@ -88,16 +89,55 @@ public class ProdutoDao {
         con.close();
 
     }
-    public List<Produto> listar() throws SQLException{
-        sql="select p.*, c.* "
+    public List<Produto> buscar(String query) throws SQLException{
+       sql= "select p.*, c.* "
                 + "from produtos p , caracteristicas c "
-                + "where p.codigo_caract = c.codigo_caract";
+                + "where p.codigo_caract = c.codigo_caract "
+                + "and p.nome_produto ilike ?";
+       con = ConnectionFactory.getConnection();
+       st = con.prepareStatement(sql);
+       st.setString(1, query+"%");
+      
+       ResultSet rs = st.executeQuery();
+       
+       List<Produto> produtos = new ArrayList<>();
+       while(rs.next()){
+            int codigo = rs.getInt(1);
+            String nome = rs.getString(2);
+            float preco = rs.getFloat(3);
+            //int codigo_caract = rs.getInt(4);
+            String marca = rs.getString(5);
+            String sistema_op = rs.getString(6);
+            String cor = rs.getString(7);
+            String detalhes = rs.getString(8);
+            
+            Produto p = new Produto();
+            p.setCodigo(codigo);
+            p.setNome_produto(nome);
+            p.setPreco_produto(preco);
+            //p.getCaracteristica().setCodigo(codigo_caract);
+            p.getCaracteristica().setMarca(marca);
+            p.getCaracteristica().setSistemaOpe(sistema_op);
+            p.getCaracteristica().setCor(cor);
+            p.getCaracteristica().setDetalhes(detalhes);
+            produtos.add(p);
+       }
+       con.close();
+       return produtos;
+       
+    }
+    public List<Produto> listar() throws SQLException{
+         sql = "select p.*, c.* "
+             + "from produtos p , caracteristicas c "
+             + "where p.codigo_caract = c.codigo_caract";
+         
+     
         con= ConnectionFactory.getConnection();
         st = con.prepareStatement(sql);
         ResultSet rs =  st.executeQuery();
-        List<Produto> list = null;
+        List<Produto> list = new ArrayList<>();
         while(rs.next()){
-            list = new ArrayList<>();
+           
             int codigo = rs.getInt("codigo");
             String nome = rs.getString(2);
             float preco = rs.getFloat(3);
@@ -115,7 +155,7 @@ public class ProdutoDao {
             p.getCaracteristica().setMarca(marca);
             p.getCaracteristica().setSistemaOpe(sistema_op);
             p.getCaracteristica().setCor(cor);
-            p.getCaracteristica().setDetalhes(detalhes);
+            p.getCaracteristica().setDetalhes(detalhes);  
             list.add(p);
         }
         con.close();
