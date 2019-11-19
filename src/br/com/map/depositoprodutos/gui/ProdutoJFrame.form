@@ -121,6 +121,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TextNome">
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="TextNomeFocusLost"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="LabelValor">
       <Properties>
@@ -128,6 +131,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TextValor">
+      <Events>
+        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="TextValorFocusLost"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="ButtonSalvar">
       <Properties>

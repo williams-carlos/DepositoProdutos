@@ -8,15 +8,15 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
     
-    private static final String URL = "jdbc:postgresql://localhost:5432/produtos";
-    private static final String USUARIO = "postgres";
-    private static final String SENHA = "admin";
+    private static final String URL = ConfigUtil.getConf(ConfigUtil.CONF_JDBC_URL);
+    private static final String USUARIO = ConfigUtil.getConf(ConfigUtil.CONF_JDBC_USUARIO);
+    private static final String SENHA = ConfigUtil.getConf(ConfigUtil.CONF_JDBC_SENHA);
     
     public static Connection getConnection(){
         try {
             return DriverManager.getConnection(URL, USUARIO, SENHA);
         } catch (SQLException ex) {
-            System.out.println("Erro: " + ex.getMessage());
+            System.out.println(MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO) + ex.getMessage());
             return null;
         }
     }

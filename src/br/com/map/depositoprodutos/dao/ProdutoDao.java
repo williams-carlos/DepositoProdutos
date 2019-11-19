@@ -47,8 +47,7 @@ public class ProdutoDao {
         if(rs.next())
             codigoEndereco = rs.getInt(1);
                         
-        System.out.println(st);
-        
+              
         //inserir produto
         sql = "insert into produtos (nome_produto , preco_produto, codigo_caract) values(?, ?, ?)";
         
@@ -62,7 +61,6 @@ public class ProdutoDao {
                         
         st.executeUpdate();
                         
-        System.out.println(st);
         con.close();
     }
     public void editar(Produto produto) throws SQLException{

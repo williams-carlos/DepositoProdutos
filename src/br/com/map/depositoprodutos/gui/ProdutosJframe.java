@@ -7,6 +7,7 @@ package br.com.map.depositoprodutos.gui;
 
 import br.com.map.depositoprodutos.dao.ProdutoDao;
 import br.com.map.depositoprodutos.modelos.Produto;
+import br.com.map.depositoprodutos.util.MensagemUtil;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,14 +23,27 @@ import javax.swing.table.DefaultTableModel;
 public class ProdutosJframe extends javax.swing.JFrame {
 
      private ProdutoDao dao;
-     private Produto produtoSelecionado;
+     private Produto produtoSelecionado = null;
     
     public ProdutosJframe()  {
        
-        this.setTitle("Produtos");
+        this.setTitle(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_TITULO));
         dao = new ProdutoDao();
         initComponents();
-        preencherTabela(null);
+        atualizarStrings();
+        
+    }
+    
+    public void atualizarStrings(){
+        
+        ButtonNovo.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_NOVO));
+        ButtonEditar.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_EDITAR));
+        ButtonExcluir.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_EXCLUIR));
+        ButtonSair.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_SAIR));
+        LabelProdutos.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_TITULO));
+        LabelBuscar.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_BUSCAR));
+        this.setTitle(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_TITULO));
+         preencherTabela(null);
         
     }
     public void preencherTabela( List<Produto> lista) 
@@ -40,7 +54,13 @@ public class ProdutosJframe extends javax.swing.JFrame {
         DefaultTableModel model = new DefaultTableModel();
         
         model.setColumnCount(7);
-        model.setColumnIdentifiers(new String[]{"Código", "Nome", "Valor", "Marca", "Sist. Ope.", "Cor", "Detalhes"});
+        model.setColumnIdentifiers(new String[]{MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_CODIGO),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_NOME),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_VALOR),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_MARCA),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_SISTMA_OPE),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_COR),
+                                                                        MensagemUtil.getMensagem(MensagemUtil.MSG_TABELA_DETALHES)});
         model.setRowCount(produtos.size());
         
         for( int i = 0; i < produtos.size(); i++){
@@ -62,7 +82,7 @@ public class ProdutosJframe extends javax.swing.JFrame {
     }
        catch(Exception ex){
            ex.printStackTrace();
-           JOptionPane.showMessageDialog(this, "Erro:" + ex.getMessage());
+           JOptionPane.showMessageDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO) + ex.getMessage());
        
        }
        
@@ -77,6 +97,10 @@ public class ProdutosJframe extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
         LabelProdutos = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableProdutos = new javax.swing.JTable();
@@ -86,6 +110,17 @@ public class ProdutosJframe extends javax.swing.JFrame {
         ButtonSair = new javax.swing.JButton();
         TextBuscar = new javax.swing.JTextField();
         LabelBuscar = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        Menu_Idiomas = new javax.swing.JMenu();
+        Item_Pt = new javax.swing.JMenuItem();
+        Item_En = new javax.swing.JMenuItem();
+        Item_Es = new javax.swing.JMenuItem();
+
+        jMenu1.setText("jMenu1");
+
+        jMenu2.setText("jMenu2");
+
+        jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,39 +181,69 @@ public class ProdutosJframe extends javax.swing.JFrame {
         LabelBuscar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         LabelBuscar.setText("Buscar :");
 
+        Menu_Idiomas.setText("Idiomas");
+
+        Item_Pt.setText("pt_BR");
+        Item_Pt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Item_PtActionPerformed(evt);
+            }
+        });
+        Menu_Idiomas.add(Item_Pt);
+
+        Item_En.setText("en_US");
+        Item_En.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Item_EnActionPerformed(evt);
+            }
+        });
+        Menu_Idiomas.add(Item_En);
+
+        Item_Es.setText("es_ES");
+        Item_Es.setToolTipText("");
+        Item_Es.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Item_EsActionPerformed(evt);
+            }
+        });
+        Menu_Idiomas.add(Item_Es);
+
+        jMenuBar1.add(Menu_Idiomas);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap(47, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(212, 212, 212))
+                        .addComponent(ButtonNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)
+                        .addComponent(ButtonEditar)
+                        .addGap(60, 60, 60)
+                        .addComponent(ButtonExcluir)
+                        .addGap(61, 61, 61)
+                        .addComponent(ButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(ButtonNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(56, 56, 56)
-                                .addComponent(ButtonEditar)
-                                .addGap(60, 60, 60)
-                                .addComponent(ButtonExcluir)
-                                .addGap(61, 61, 61)
-                                .addComponent(ButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(LabelBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(LabelBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 25, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(208, 208, 208)
+                .addComponent(LabelProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addComponent(LabelProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LabelBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TextBuscar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -214,7 +279,7 @@ public class ProdutosJframe extends javax.swing.JFrame {
              
              preencherTabela( produtos);
          } catch (SQLException ex) {
-             JOptionPane.showMessageDialog(this, "Erro"+ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+             JOptionPane.showMessageDialog(this, ex.getMessage(), MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO_CONSULTAR), JOptionPane.ERROR_MESSAGE);
          }
     }//GEN-LAST:event_TextBuscarKeyReleased
 
@@ -228,7 +293,7 @@ public class ProdutosJframe extends javax.swing.JFrame {
              produtoSelecionado = dao.buscarPorCodigo(codigo);
              
          } catch (SQLException ex) {
-             JOptionPane.showMessageDialog(this, "erro: "+ex.getMessage());
+             JOptionPane.showMessageDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO)+ex.getMessage());
          }
         
         
@@ -237,14 +302,16 @@ public class ProdutosJframe extends javax.swing.JFrame {
     private void ButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonExcluirActionPerformed
         try {       
         if (produtoSelecionado!=null){
-           int op = JOptionPane.showConfirmDialog(this, "Excluir "+ produtoSelecionado.getNome_produto()+ "?", "Excluir", JOptionPane.OK_CANCEL_OPTION);
-           if(op == JOptionPane.OK_OPTION)
+           int op = JOptionPane.showConfirmDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_EXCLUIR) + produtoSelecionado.getNome_produto(), MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_EXCLUIR), JOptionPane.OK_CANCEL_OPTION);
+           if(op == JOptionPane.OK_OPTION){
                dao.excluir(produtoSelecionado);
-           produtoSelecionado = null;
-           preencherTabela(null);
-           }
+               produtoSelecionado = null;
+               preencherTabela(null);}
+        }
+        else
+                JOptionPane.showMessageDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO_SELECIONAR));
         } catch (SQLException ex) {
-               JOptionPane.showMessageDialog(this, "erro: "+ex.getMessage());
+               
         }        
     }//GEN-LAST:event_ButtonExcluirActionPerformed
 
@@ -255,7 +322,24 @@ public class ProdutosJframe extends javax.swing.JFrame {
             janela.setVisible(true);
             
         }
+        else
+            JOptionPane.showMessageDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO_SELECIONAR));
     }//GEN-LAST:event_ButtonEditarActionPerformed
+
+    private void Item_PtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Item_PtActionPerformed
+        MensagemUtil.setLocale(MensagemUtil.PT_BR);
+        atualizarStrings();
+    }//GEN-LAST:event_Item_PtActionPerformed
+
+    private void Item_EnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Item_EnActionPerformed
+        MensagemUtil.setLocale(MensagemUtil.EN_US);
+        atualizarStrings();
+    }//GEN-LAST:event_Item_EnActionPerformed
+
+    private void Item_EsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Item_EsActionPerformed
+        MensagemUtil.setLocale(MensagemUtil.ES_ES);
+        atualizarStrings();
+    }//GEN-LAST:event_Item_EsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -298,10 +382,19 @@ public class ProdutosJframe extends javax.swing.JFrame {
     private javax.swing.JButton ButtonExcluir;
     private javax.swing.JButton ButtonNovo;
     private javax.swing.JButton ButtonSair;
+    private javax.swing.JMenuItem Item_En;
+    private javax.swing.JMenuItem Item_Es;
+    private javax.swing.JMenuItem Item_Pt;
     private javax.swing.JLabel LabelBuscar;
     private javax.swing.JLabel LabelProdutos;
+    private javax.swing.JMenu Menu_Idiomas;
     private javax.swing.JTable TableProdutos;
     private javax.swing.JTextField TextBuscar;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

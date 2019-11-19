@@ -7,6 +7,9 @@ package br.com.map.depositoprodutos.gui;
 
 import br.com.map.depositoprodutos.dao.ProdutoDao;
 import br.com.map.depositoprodutos.modelos.Produto;
+import br.com.map.depositoprodutos.util.MensagemUtil;
+import java.awt.Color;
+import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,17 +29,29 @@ public class ProdutoJFrame extends javax.swing.JFrame {
     public ProdutoJFrame(ProdutosJframe parent, Produto produto) {
         this.parent = parent; 
         this.produto = produto;
-        this.setTitle("Produto");
+        this.setTitle(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_TITULO));
         this.dao = new ProdutoDao();
         initComponents();
-       this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        atualizarStrings();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
        preencherCampos();
+    }
+    private void atualizarStrings(){
+        
+        ButtonCancelar.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_CANCELAR));
+        ButtonSalvar.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_BUTTON_SALVAR));
+        LabelNome.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_NOME));
+        LabelValor.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_VALOR));
+        LabelMarca.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_MARCA));
+        LabelSO.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_SIST_OPER));
+        LabelCor.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_COR));
+        LabelDetalhes.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_DETALHES));
     }
 
      private void preencherCampos(){
      
          if(produto!= null){
-             this.LabelTitulo.setText("Editar Produto");
+             this.LabelTitulo.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_EDITAR_PRODUT));
              this.TextNome.setText(produto.getNome_produto());
              this.TextValor.setText(String.valueOf(produto.getPreco_produto()));
              this.TextMarca.setText(produto.getCaracteristica().getMarca());
@@ -45,7 +60,7 @@ public class ProdutoJFrame extends javax.swing.JFrame {
              this.TextDetalhes.setText(produto.getCaracteristica().getDetalhes());
          }
          else
-             this.LabelTitulo.setText("Novo Produto");
+             this.LabelTitulo.setText(MensagemUtil.getMensagem(MensagemUtil.MSG_LABEL_NOVO_PRODUT));
      }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -79,7 +94,19 @@ public class ProdutoJFrame extends javax.swing.JFrame {
 
         LabelNome.setText("NOME");
 
+        TextNome.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TextNomeFocusLost(evt);
+            }
+        });
+
         LabelValor.setText("VALOR");
+
+        TextValor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TextValorFocusLost(evt);
+            }
+        });
 
         ButtonSalvar.setBackground(new java.awt.Color(51, 51, 255));
         ButtonSalvar.setText("SALVAR");
@@ -185,11 +212,40 @@ public class ProdutoJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_ButtonCancelarActionPerformed
-
+ private void validarCampos() throws Exception {
+       
+      
+     if (TextNome.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, MensagemUtil.getMensagem(MensagemUtil.MSG_VALIDACAO_NOME), MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO), JOptionPane.ERROR_MESSAGE);
+            TextNome.requestFocus();
+            TextNome.setBackground(new Color(190, 30, 194));
+            throw new Exception(MensagemUtil.getMensagem(MensagemUtil.MSG_VALIDACAO_NOME));
+            
+        }
+       
+        if(!TextValor.getText().isEmpty()){
+         TextValor.setText(TextValor.getText().replace(',', '.')); //permite digitar com , ou .
+          try {
+               Float.parseFloat(TextValor.getText()); //tenta fazer a conversão
+           } catch (NumberFormatException e){ //se não conseguir levanta uma exceção
+               JOptionPane.showMessageDialog(null, MensagemUtil.getMensagem(MensagemUtil.MSG_VALIDACAO_VALOR), MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO), JOptionPane.ERROR_MESSAGE);
+               TextValor.requestFocus(); //no caso de erro devolve o foco para o campo, assim não permitindo sair enquanto não solucionar.
+               TextValor.setBackground(new Color(193, 33, 194));
+            }
+        }  
+       if (TextValor.getText() == null || TextValor.getText().equals("") ){
+          
+               JOptionPane.showMessageDialog(null, MensagemUtil.getMensagem(MensagemUtil.MSG_VALIDACAO_VALOR), MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO), JOptionPane.ERROR_MESSAGE);
+               TextValor.requestFocus(); //no caso de erro devolve o foco para o campo, assim não permitindo sair enquanto não solucionar.
+               TextValor.setBackground(new Color(193, 33, 194));
+           }
+        }
+ 
     private void ButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSalvarActionPerformed
         // TODO add your handling code here:
          try {
-             
+             validarCampos();
+             // Editar o produto
              if(produto!=null){
                    
                  produto.setNome_produto(TextNome.getText());
@@ -201,6 +257,7 @@ public class ProdutoJFrame extends javax.swing.JFrame {
                  
                  dao.editar(produto);
              }
+             //Salvar ( inserir ) um novo produto
              else{    
              
                 Produto prod = new Produto();
@@ -213,17 +270,34 @@ public class ProdutoJFrame extends javax.swing.JFrame {
                  prod.getCaracteristica().setDetalhes(TextDetalhes.getText());
         
        
-        dao.inserir(prod);
+            dao.inserir(prod);
              }
-        } catch (SQLException ex) {
-            JOptionPane.showInputDialog(this, "erro" +ex.getMessage());
-        }
-        
+
         parent.preencherTabela(null);
         
         dispose();
+        
+        } catch (SQLException ex) {
+            JOptionPane.showInputDialog(this, MensagemUtil.getMensagem(MensagemUtil.MSG_ERRO) +ex.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(ProdutoJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_ButtonSalvarActionPerformed
 
+    private void TextNomeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextNomeFocusLost
+        // TODO add your handling code here:
+        if (TextNome.getText() != null && !TextNome.getText().equals("")) {
+            TextNome.setBackground(Color.WHITE);
+    }//GEN-LAST:event_TextNomeFocusLost
+    }
+    private void TextValorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextValorFocusLost
+        // TODO add your handling code here:
+        if(!TextValor.getText().isEmpty()){
+            TextValor.setBackground(Color.WHITE);
+        }
+        
+    }//GEN-LAST:event_TextValorFocusLost
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonCancelar;
