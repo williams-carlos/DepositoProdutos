@@ -7,14 +7,18 @@ package br.com.map.depositoprodutos.gui;
 
 import br.com.map.depositoprodutos.dao.ProdutoDao;
 import br.com.map.depositoprodutos.modelos.Produto;
+import br.com.map.depositoprodutos.reports.RelatoriosGerenciador;
 import br.com.map.depositoprodutos.util.MensagemUtil;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.swing.JRViewer;
 
 /**
  *
@@ -115,6 +119,9 @@ public class ProdutosJframe extends javax.swing.JFrame {
         Item_Pt = new javax.swing.JMenuItem();
         Item_En = new javax.swing.JMenuItem();
         Item_Es = new javax.swing.JMenuItem();
+        MenuRelatorio = new javax.swing.JMenu();
+        RelatorioListaCompleta = new javax.swing.JMenuItem();
+        RelatorioLista1000 = new javax.swing.JMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -209,6 +216,21 @@ public class ProdutosJframe extends javax.swing.JFrame {
         Menu_Idiomas.add(Item_Es);
 
         jMenuBar1.add(Menu_Idiomas);
+
+        MenuRelatorio.setText("Relatórios");
+
+        RelatorioListaCompleta.setText("Relatorio Geral");
+        RelatorioListaCompleta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RelatorioListaCompletaActionPerformed(evt);
+            }
+        });
+        MenuRelatorio.add(RelatorioListaCompleta);
+
+        RelatorioLista1000.setText("Relatorio >1000$");
+        MenuRelatorio.add(RelatorioLista1000);
+
+        jMenuBar1.add(MenuRelatorio);
 
         setJMenuBar(jMenuBar1);
 
@@ -341,6 +363,26 @@ public class ProdutosJframe extends javax.swing.JFrame {
         atualizarStrings();
     }//GEN-LAST:event_Item_EsActionPerformed
 
+    private void RelatorioListaCompletaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RelatorioListaCompletaActionPerformed
+
+         try{
+            
+            List<Produto> lista = dao.listar();
+            JasperPrint relatorio = RelatoriosGerenciador.gerarRelatorioProdutos(lista);
+            
+            JRViewer view = new JRViewer(relatorio);
+            
+            JFrame janela = new JFrame();
+            janela.add(view);
+            janela.setSize(800, 600);
+            janela.setVisible(true);
+            
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+        }
+    }//GEN-LAST:event_RelatorioListaCompletaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -387,7 +429,10 @@ public class ProdutosJframe extends javax.swing.JFrame {
     private javax.swing.JMenuItem Item_Pt;
     private javax.swing.JLabel LabelBuscar;
     private javax.swing.JLabel LabelProdutos;
+    private javax.swing.JMenu MenuRelatorio;
     private javax.swing.JMenu Menu_Idiomas;
+    private javax.swing.JMenuItem RelatorioLista1000;
+    private javax.swing.JMenuItem RelatorioListaCompleta;
     private javax.swing.JTable TableProdutos;
     private javax.swing.JTextField TextBuscar;
     private javax.swing.JMenu jMenu1;
